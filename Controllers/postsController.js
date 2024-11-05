@@ -1,23 +1,31 @@
+const { log } = require('console')
 const posts = require('../db/posts.js')
 const fs = require('fs')
 
+// const index = (req,res) => {
+//   let markup = '<ul>'
+
+//   posts.forEach(post => {
+
+//     const {title, content, image} = post
+
+//     markup += `
+//     <li>
+//       <h2>${title}</h2>
+//       <p>${content}</p>
+//       <img src="public/imgs/posts/${image}" alt="">
+//     </li>
+//       `
+//   });
+//   markup += `</ul>`
+//   res.send(markup)
+// }
+
 const index = (req,res) => {
-  let markup = '<ul>'
-
-  posts.forEach(post => {
-
-    const {title, content, image} = post
-
-    markup += `
-    <li>
-      <h2>${title}</h2>
-      <p>${content}</p>
-      <img src="public/imgs/posts/${image}" alt="">
-    </li>
-      `
-  });
-  markup += `</ul>`
-  res.send(markup)
+  res.json({
+    data: posts,
+    counter: posts.length
+  })
 }
 
 const show = (req, res) => {
@@ -50,10 +58,32 @@ const store =(req,res) => {
   
 }
 
+const update = (req,res) => {
+  const update = {
+    ...req.body
+  }
+
+  const toUpdate = posts.find(post => {
+    if(post.slug.toLowerCase() === req.params.slug.toLowerCase()){
+      posts.splice(posts.indexOf(post),1, {update})
+      return true
+    } else {
+      return false
+    }
+  })
+  console.log(posts)
+  
+
+  res.json({
+    update: posts
+  })
+  
+}
 
 module.exports ={
   index, 
   show,
   printByTag,
-  store
+  store,
+  update
 }
