@@ -1,25 +1,27 @@
-const { log } = require('console')
-const posts = require('../db/posts.js')
-const fs = require('fs')
+const posts = require('../db/posts.js') // database
+const fs = require('fs') //to manipulate system files
 
-// const index = (req,res) => {
-//   let markup = '<ul>'
 
-//   posts.forEach(post => {
+//old version of Index
 
-//     const {title, content, image} = post
+/* const index = (req,res) => {
+  let markup = '<ul>'
 
-//     markup += `
-//     <li>
-//       <h2>${title}</h2>
-//       <p>${content}</p>
-//       <img src="public/imgs/posts/${image}" alt="">
-//     </li>
-//       `
-//   });
-//   markup += `</ul>`
-//   res.send(markup)
-// }
+  posts.forEach(post => {
+
+    const {title, content, image} = post
+
+    markup += `
+    <li>
+      <h2>${title}</h2>
+      <p>${content}</p>
+      <img src="public/imgs/posts/${image}" alt="">
+    </li>
+      `
+  });
+  markup += `</ul>`
+  res.send(markup)
+} */
 
 const index = (req,res) => {
   res.json({
@@ -30,7 +32,6 @@ const index = (req,res) => {
 
 const show = (req, res) => {
   const post = posts.find(post => post.slug === req.params.slug)
-  // console.log(post);
   
   res.json({
     data:post
@@ -40,8 +41,9 @@ const show = (req, res) => {
 const printByTag = (req, res) => {
   const tag = req.params.tag
 
+  //filters posts with that specific tag
   const postsWTag = posts.filter( element => element.tags.includes(tag))
-  console.log(postsWTag);
+
   res.send(postsWTag)
 }
 
@@ -50,23 +52,31 @@ const store =(req,res) => {
     ...req.body
   }
 
-  posts.push(toStore)
+  //push in posts
+  posts.push(toStore) 
+  
+  //rewrite and update the "database"
   fs.writeFileSync('./db/posts.js',`module.exports=${JSON.stringify(posts,null,2)}`)
 
-  console.log(posts);
   res.json({posts})
-  
 }
 
 const update = (req,res) => {
+
+  //memorise the update that client want to do
   const update = {
     ...req.body
   }  
-
-  const slugPar = req.params.slug.toLowerCase()
-
+  
   const toUpdate = posts.find(post => {
+
+    //slug from parameters of url
+    const slugPar = req.params.slug.toLowerCase()
+    
+    //slug from posts key
     const slugPost = post.slug.toLowerCase()
+
+    //if there is the slug, it will change the object
     if(slugPost === slugPar){
       posts.splice(posts.indexOf(post),1, update)
       return true
@@ -75,12 +85,15 @@ const update = (req,res) => {
     }
   })
 
+  //if toUpdate is empty or false, it will be returned a bad request, to indicate that the client searched a non-existent post
   if(!toUpdate){
     return res.status(400).send("Error: 400 Bad Request")
   }
 
+  //rewrtie the "database" and update it
   fs.writeFileSync('./db/posts.js', `module.exports=${JSON.stringify(posts,null,2)}`)
 
+  // return to client the new Object
   return res.json({
     "New Posts": posts
   })

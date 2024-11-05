@@ -10,6 +10,6 @@ router.get('/tag/:tag', postsController.printByTag)
 
 router.post('/create', postsController.store)
 
-router.post('/update/:slug', postsController.update)
+router.put('/update/:slug', postsController.update) //could use put or post
 
 module.exports = router

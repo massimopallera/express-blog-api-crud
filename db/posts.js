@@ -65,7 +65,8 @@ module.exports=[
     "tags": [
       "Dolci",
       "Torte",
-      "Ricette al forno"
+      "Ricette al forno",
+      "Con put"
     ]
   }
 ]
