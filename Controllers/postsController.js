@@ -61,21 +61,28 @@ const store =(req,res) => {
 const update = (req,res) => {
   const update = {
     ...req.body
-  }
+  }  
+
+  const slugPar = req.params.slug.toLowerCase()
 
   const toUpdate = posts.find(post => {
-    if(post.slug.toLowerCase() === req.params.slug.toLowerCase()){
-      posts.splice(posts.indexOf(post),1, {update})
+    const slugPost = post.slug.toLowerCase()
+    if(slugPost === slugPar){
+      posts.splice(posts.indexOf(post),1, update)
       return true
     } else {
       return false
     }
   })
-  console.log(posts)
-  
 
-  res.json({
-    update: posts
+  if(!toUpdate){
+    return res.status(400).send("Error: 400 Bad Request")
+  }
+
+  fs.writeFileSync('./db/posts.js', `module.exports=${JSON.stringify(posts,null,2)}`)
+
+  return res.json({
+    "New Posts": posts
   })
   
 }
