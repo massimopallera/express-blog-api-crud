@@ -100,10 +100,34 @@ const update = (req,res) => {
   
 }
 
+const destroy = (req,res) => {
+  const slug = req.params.slug.toLowerCase()
+
+  const post = posts.find(post => post.slug.toLowerCase() === slug)
+
+  if(!post){
+    return res.status(404).send("Error: 404 Not Found")
+  }
+
+  //using filter create another array, meanwhile with splice we just remove the element from the original array
+  // const newPosts = posts.filter(post => post.slug.toLowerCase()!== slug)
+  posts.splice(posts.indexOf(post),1)
+
+  fs.writeFileSync('./db/posts.js', `module.exports=${JSON.stringify(posts,null,2)}`)
+
+  res.status(200).json({
+    "status" : "200 OK",
+    "data" : posts,
+    "count": posts.length
+  })
+
+}
+
 module.exports ={
   index, 
   show,
   printByTag,
   store,
-  update
+  update,
+  destroy
 }
