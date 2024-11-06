@@ -48,9 +48,22 @@ const update = (req,res) => {
   })
 }
 
-
 //Creare a new product
-const create = (req, res) => {}
+const create = (req, res) => {
+  const toPush = {
+    "id" : products.length+1,
+    ...req.body
+  }
+
+  products.push(toPush)
+  fs.writeFileSync('./db/products.js', `module.exports=${JSON.stringify(products, null, 2)}`);
+
+  res.status(200).json({
+    "status" : 200,
+    "data": products
+  })
+
+}
 
 //Delete a product
 const destroy = (req, res) => {}
