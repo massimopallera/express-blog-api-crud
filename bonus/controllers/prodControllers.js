@@ -21,7 +21,7 @@ const show = (req, res) => {
   const product = findEl(reqId)
   
   if(!product){
-    res.status(404).send(`404 Not Found ${product}`)
+    return res.status(404).send(`404 Not Found`)
   }
   
   res.status(200).json(product)
@@ -35,7 +35,7 @@ const update = (req,res) => {
   const product = findEl(reqId)
 
   if(!product){
-    res.status(404).send(`404 Not Found ${product}`)
+    return res.status(404).send(`404 Not Found`)
   }
 
   products.splice(products.indexOf(product),1,toUpdate)
@@ -58,15 +58,32 @@ const create = (req, res) => {
   products.push(toPush)
   fs.writeFileSync('./db/products.js', `module.exports=${JSON.stringify(products, null, 2)}`);
 
-  res.status(200).json({
-    "status" : 200,
+  res.status(201).json({
+    "status" : 201,
     "data": products
   })
 
 }
 
 //Delete a product
-const destroy = (req, res) => {}
+const destroy = (req, res) => {
+  const reqId = req.params.id
+  const product = findEl(reqId)
+
+  if(!product){
+    return res.status(404).send(`404 Not Found`)
+  }
+
+  products.splice(products.indexOf(product),1)
+
+  fs.writeFileSync('./db/products.js', `module.exports=${JSON.stringify(products, null, 2)}`);
+
+  res.status(200).json({
+    "status" : 200,
+    "data": products
+  })
+  
+}
 
 module.exports = {
   index,

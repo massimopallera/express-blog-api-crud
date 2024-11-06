@@ -498,15 +498,5 @@ module.exports=[
       "Sleep"
     ],
     "description": "White noise machine for better sleep"
-  },
-  {
-    "id": 51,
-    "name": "Smart Lock--Created",
-    "price": 150,
-    "categories": [
-      "Home Automation",
-      "Security"
-    ],
-    "description": "Smart lock with app control and remote access"
   }
 ]
