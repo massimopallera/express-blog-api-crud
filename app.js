@@ -1,23 +1,25 @@
 const express = require('express')
 const app = express()
-const HOST = process.env.HOST
-const PORT = process.env.PORT
+const HOST = process.env.HOST || "http://127.0.0.1"
+const PORT = process.env.PORT || 3000 || 3001
 
+// 📌 middlewares
 const logger = require('./middleware/logger.js')
 const notFound = require('./middleware/notFound.js')
 
+// 📌 routes
+const postsRouter = require('./routes/posts.js')
+
 app.use(express.json())
+
+
 
 //Create a Server Error to test Server Error Handling
 // app.use((req, res, next) => {
 //   throw new Error('Try Server Error Handling')
 // })
-
+  
 app.use('/public',express.static('public'))
-
-
-const postsRouter = require('./routes/posts.js')
-
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${HOST}:${PORT}`);

@@ -3,7 +3,6 @@ const fs = require('fs') //to manipulate system files
 
 
 //old version of Index
-
 /* const index = (req,res) => {
   let markup = '<ul>'
 
@@ -24,16 +23,16 @@ const fs = require('fs') //to manipulate system files
 } */
 
 const index = (req,res) => {
-  res.json({
+  res.status(200).json({
     data: posts,
     counter: posts.length
   })
 }
 
 const show = (req, res) => {
-  const post = posts.find(post => post.slug === req.params.slug)
+  const post = posts.find(post => post.slug.toLowerCase() === req.params.slug.toLowerCase())
   
-  res.json({
+  res.status(200).json({
     data:post
   })
 }
@@ -44,7 +43,12 @@ const printByTag = (req, res) => {
   //filters posts with that specific tag
   const postsWTag = posts.filter( element => element.tags.includes(tag))
 
-  res.send(postsWTag)
+  // res.send(postsWTag)
+
+  res.status(200).json({
+    tag,
+    posts: postsWTag
+  })
 }
 
 const store =(req,res) => {
@@ -58,7 +62,7 @@ const store =(req,res) => {
   //rewrite and update the "database"
   fs.writeFileSync('./db/posts.js',`module.exports=${JSON.stringify(posts,null,2)}`)
 
-  res.json({posts})
+  res.status(200).json({posts})
 }
 
 const update = (req,res) => {
@@ -68,15 +72,16 @@ const update = (req,res) => {
     ...req.body
   }  
   
-  const toUpdate = posts.find(post => {
+  //slug from parameters of url
+  const slugPar = req.params.slug.toLowerCase()
 
-    //slug from parameters of url
-    const slugPar = req.params.slug.toLowerCase()
-    
+  //find the post with the slug and update it
+  const toUpdate = posts.find(post => {
+  
     //slug from posts key
     const slugPost = post.slug.toLowerCase()
 
-    //if there is the slug, it will change the object
+    //if there is the slug, it will update the object
     if(slugPost === slugPar){
       posts.splice(posts.indexOf(post),1, update)
       return true
@@ -85,16 +90,16 @@ const update = (req,res) => {
     }
   })
 
-  //if toUpdate is empty or false, it will be returned a bad request, to indicate that the client searched a non-existent post
+  //if toUpdate is empty or false, it will be returned a 404
   if(!toUpdate){
-    return res.status(400).send("Error: 400 Bad Request")
+    return res.status(404).send("Error: 404 Not Found")
   }
 
   //rewrtie the "database" and update it
   fs.writeFileSync('./db/posts.js', `module.exports=${JSON.stringify(posts,null,2)}`)
 
   // return to client the new Object
-  return res.json({
+  return res.status(200).json({
     "New Posts": posts
   })
   
