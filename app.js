@@ -1,4 +1,6 @@
 const express = require('express')
+const cors = require('cors')
+
 const app = express()
 const HOST = process.env.HOST || "http://127.0.0.1"
 const PORT = process.env.PORT || 3000 || 3001
@@ -11,7 +13,7 @@ const notFound = require('./middleware/notFound.js')
 const postsRouter = require('./routes/posts.js')
 
 app.use(express.json())
-
+app.use(cors())
 
 
 //Create a Server Error to test Server Error Handling
@@ -19,14 +21,24 @@ app.use(express.json())
 //   throw new Error('Try Server Error Handling')
 // })
   
-app.use('/public',express.static('public'))
+app.use(express.static('public'))
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${HOST}:${PORT}`);
 })
 
-app.use('/posts',logger)
-app.use('/posts',postsRouter)
+// app.listen(port = 3001, function () {
+//   console.log('CORS-enabled web server listening on port ',port)
+// })
+
+
+// Home Page
+// app.use('/', (req,res) => {
+//   res.json('Welcome to Express Blog API')
+// })
+
+app.use('/posts', logger)
+app.use('/posts', postsRouter)
 
 app.use(notFound)
 
