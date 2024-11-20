@@ -1,6 +1,9 @@
 const express = require('express')
 const cors = require('cors')
 
+const tags = require('./db/tags.js')
+const categories = require('./db/categories.js')
+
 const app = express()
 const HOST = process.env.HOST || "http://127.0.0.1"
 const PORT = process.env.PORT || 3000 || 3001
@@ -27,18 +30,24 @@ app.listen(PORT, () => {
   console.log(`Server listening on ${HOST}:${PORT}`);
 })
 
-// app.listen(port = 3001, function () {
-//   console.log('CORS-enabled web server listening on port ',port)
-// })
-
-
 // Home Page
 // app.use('/', (req,res) => {
-//   res.json('Welcome to Express Blog API')
+//   res.send('Welcome to Express Blog API')
 // })
 
 app.use('/posts', logger)
 app.use('/posts', postsRouter)
+
+app.get('/tags', (req, res) => { 
+  res.status(200).json({
+    tags
+  })
+})
+app.get('/categories', (req, res) => { 
+  res.status(200).json({
+    categories
+  })
+})
 
 app.use(notFound)
 
