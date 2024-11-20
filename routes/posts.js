@@ -7,12 +7,12 @@ router.get('/', postsController.index)
 
 router.get('/:slug', postsController.show)
 
-router.get('/tag/:tag', postsController.printByTag)
+router.get('/:tag', postsController.printByTag)
 
-router.post('/create', postsController.store)
+router.post('/', postsController.store)
 
-router.put('/update/:slug', postsController.update)
+router.put('/:slug', postsController.update)
 
-router.delete('/delete/:slug', postsController.destroy)
+router.delete('/:slug', postsController.destroy)
 
 module.exports = router

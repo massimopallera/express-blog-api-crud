@@ -56,16 +56,5 @@ module.exports=[
       "Ricette vegetariane",
       "Ricette al forno"
     ]
-  },
-  {
-    "title": "ProvaUpdateCiambellone",
-    "slug": "ciambellone2",
-    "content": "Prova",
-    "image": "imgs/ciambellone.jpeg",
-    "tags": [
-      "Dolci",
-      "Torte",
-      "Ricette al forno"
-    ]
   }
 ]
