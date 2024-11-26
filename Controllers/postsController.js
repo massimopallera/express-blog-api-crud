@@ -32,7 +32,18 @@ const index = (req,res) => {
 const show = (req, res) => {
   const post = posts.find(post => post.slug.toLowerCase() === req.params.slug.toLowerCase())
   
+  let prev, next = undefined
+
+  if (posts.indexOf(post) > 0) {
+    prev = posts[posts.indexOf(post)-1].slug
+  }
+  if (posts.indexOf(post) < posts.length-1) {
+    next = posts[posts.indexOf(post)+1].slug
+  }
+
   res.status(200).json({
+    next,
+    prev,
     data:post
   })
 }
